@@ -1,0 +1,92 @@
+body {
+    background-color: #f8d7da; /* Fundo rosa claro */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.9); /* Fundo branco com leve transparência */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+h2 {
+    font-family: 'Lobster', cursive;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #e57373; /* Cor do botão */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #ef5350;
+}
+
+#calendarContainer {
+    margin-top: 20px;
+}
+
+#calendar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.day {
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 50%;
+    background-color: #ccc;
+    font-size: 12px;
+}
+
+.menstrual {
+    background-color: #f06292; /* Cor para os dias de menstruação */
+}
+
+.ovulation {
+    background-color: #4fc3f7; /* Cor para os dias de ovulação */
+}
+
+.fertile {
+    background-color: #81c784; /* Cor para os dias férteis */
+}
+
+.current-day {
+    background-color: #ffebee; /* Cor para o dia atual */
+    border: 2px solid #f06292;
+}

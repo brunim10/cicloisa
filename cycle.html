@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento do Ciclo Menstrual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: opacity 0.3s ease-out;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+            font-weight: bold;
+            color: #666;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #5e97d1;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            margin-top: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #4c83b9;
+        }
+
+        #calendarContainer {
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .calendar {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-width: 300px;
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        .month {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .days-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .day {
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            margin: 2px;
+            border-radius: 50%;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .current-day {
+            background-color: #f06292; /* Rosa */
+            color: #fff;
+        }
+
+        .menstrual {
+            background-color: #ff8a80; /* Vermelho */
+            color: #fff;
+        }
+
+        .ovulation {
+            background-color: #81d4fa; /* Azul */
+            color: #000;
+        }
+
+        .fertile {
+            background-color: #c5e1a5; /* Verde */
+            color: #000;
+        }
+
+        .legend {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .legend-item {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .legend-item span {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 5px;
+            vertical-align: middle;
+            margin-bottom: 3px;
+        }
+
+        .legend-item .menstrual {
+            background-color: #ff8a80; /* Vermelho */
+        }
+
+        .legend-item .ovulation {
+            background-color: #81d4fa; /* Azul */
+        }
+
+        .legend-item .fertile {
+            background-color: #c5e1a5; /* Verde */
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .legend-item {
+                display: block;
+                margin: 0 auto 10px;
+            }
+
+            .legend-item span {
+                margin-right: 8px;
+            }
+        }
+
+        .carousel {
+            display: flex;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .carousel-container {
+            display: flex;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .carousel-btn {
+            background-color: #5e97d1;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin: 10px;
+        }
+
+        .carousel-btn:hover {
+            background-color: #4c83b9;
+        }
+
+        .carousel-btn-container {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="formContainer">
+        <h2>Monitoramento do Ciclo Menstrual</h2>
+        <label for="lastDate">Data da última menstruação:</label>
+        <input type="date" id="lastDate">
+        <label for="cycleLength">Duração do ciclo (em dias):</label>
+        <input type="number" id="cycleLength">
+        <label for="menstruationLength">Duração da menstruação (em dias):</label>
+        <input type="number" id="menstruationLength">
+        <button id="calculateButton">Calcular</button>
+    </div>
+
+    <div class="container hidden" id="calendarContainer">
+        <div class="carousel">
+            <div class="carousel-container"></div>
+        </div>
+        <div class="carousel-btn-container">
+            <button class="carousel-btn" id="prevMonth">Anterior</button>
+            <button class="carousel-btn" id="nextMonth">Próximo</button>
+        </div>
+        <div class="legend">
+            <div class="legend-item"><span class="menstrual"></span> Menstruação</div>
+            <div class="legend-item"><span class="ovulation"></span> Ovulação</div>
+            <div class="legend-item"><span class="fertile"></span> Período fértil</div>
+        </div>
+        <button id="backToFormButton">Voltar ao formulário</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+        import { getDatabase, ref, set, get, child, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJj5DtpYPNforF7ODV7OC6MJjtwQj6HgE",
+            authDomain: "isaciclo-f2c20.firebaseapp.com",
+            databaseURL: "https://isaciclo-f2c20-default-rtdb.firebaseio.com",
+            projectId: "isaciclo-f2c20",
+            storageBucket: "isaciclo-f2c20.appspot.com",
+            messagingSenderId: "299358507424",
+            appId: "1:299358507424:web:bdb219428c4ba0cca354c5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const userRef = ref(db, 'users/isabelly');
+
+        function generateCalendar(lastDate, cycleLength, menstruationLength) {
+            const today = new Date();
+            const calendarContainer = document.getElementById('calendarContainer');
+            const carouselContainer = calendarContainer.querySelector('.carousel-container');
+            const formContainer = document.getElementById('formContainer');
+
+            carouselContainer.innerHTML = ''; // Limpa o conteúdo anterior do calendário
+
+            const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+            for (let m = 0; m < 6; m++) { // Exibir os próximos 6 meses
+                const monthDate = new Date(lastDate);
+                monthDate.setMonth(lastDate.getMonth() + m);
+
+                const monthName = months[monthDate.getMonth()];
+                const year = monthDate.getFullYear();
+
+                const monthElement = document.createElement('div');
+                monthElement.classList.add('calendar');
+                monthElement.innerHTML = `
+                    <div class="month">${monthName} de ${year}</div>
+                    <div class="days-container" id="calendar-${monthDate.getMonth()}-${monthDate.getFullYear()}"></div>
+                `;
+
+                const daysContainer = monthElement.querySelector('.days-container');
+
+                const firstDayOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+                const lastDayOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
+                const totalDays = lastDayOfMonth.getDate();
+
+                for (let day = 1; day <= totalDays; day++) {
+                    const currentDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), day);
+                    const dayElement = document.createElement('div');
+                    dayElement.classList.add('day');
+                    dayElement.textContent = day;
+
+                    if (currentDate.toDateString() === today.toDateString()) {
+                        dayElement.classList.add('current-day');
+                    }
+
+                    const dayDifference = Math.floor((currentDate - lastDate) / (1000 * 60 * 60 * 24));
+                    const cycleDay = (dayDifference % cycleLength + cycleLength) % cycleLength;
+
+                    if (cycleDay < menstruationLength) {
+                        dayElement.classList.add('menstrual');
+                    } else if (cycleDay === 14) {
+                        dayElement.classList.add('ovulation');
+                    } else if (cycleDay > 10 && cycleDay < 14) {
+                        dayElement.classList.add('fertile');
+                    }
+
+                    // Adiciona evento de clique ao dia
+                    dayElement.addEventListener('click', () => {
+                        alert(`Você clicou no dia ${day} de ${monthName} de ${year}`);
+                        // Aqui você pode adicionar mais funcionalidades, como exibir um modal com mais informações
+                    });
+
+                    daysContainer.appendChild(dayElement);
+                }
+
+                carouselContainer.appendChild(monthElement);
+            }
+
+            let currentIndex = 0;
+
+            function updateCarousel() {
+                const offset = -currentIndex * calendarContainer.clientWidth;
+                carouselContainer.style.transform = `translateX(${offset}px)`;
+            }
+
+            document.getElementById('prevMonth').addEventListener('click', function() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateCarousel();
+                }
+            });
+
+            document.getElementById('nextMonth').addEventListener('click', function() {
+                if (currentIndex < 5) {
+                    currentIndex++;
+                    updateCarousel();
+                }
+            });
+
+            document.getElementById('backToFormButton').addEventListener('click', function() {
+                calendarContainer.style.opacity = '0';
+                setTimeout(() => {
+                    calendarContainer.classList.add('hidden');
+                    formContainer.classList.remove('hidden');
+                    formContainer.style.opacity = '1';
+                }, 300);
+            });
+
+            formContainer.style.opacity = '0';
+            setTimeout(() => {
+                formContainer.classList.add('hidden');
+                calendarContainer.classList.remove('hidden');
+                calendarContainer.style.opacity = '1';
+                updateCarousel();
+            }, 300);
+        }
+
+        document.getElementById('calculateButton').addEventListener('click', function() {
+            const lastDateValue = document.getElementById('lastDate').value;
+            const cycleLength = parseInt(document.getElementById('cycleLength').value);
+            const menstruationLength = parseInt(document.getElementById('menstruationLength').value);
+
+            if (!lastDateValue || isNaN(cycleLength) || isNaN(menstruationLength)) {
+                alert('Por favor, preencha todos os campos corretamente.');
+                return;
+            }
+
+            const lastDate = new Date(lastDateValue);
+
+            // Salvar dados no Firebase
+            set(userRef, {
+                lastDate: lastDateValue,
+                cycleLength: cycleLength,
+                menstruationLength: menstruationLength,
+                timestamp: serverTimestamp()
+            }).then(() => {
+                generateCalendar(lastDate, cycleLength, menstruationLength);
+            }).catch((error) => {
+                console.error("Erro ao salvar dados:", error);
+            });
+        });
+
+        // Carregar dados do Firebase
+        get(child(userRef, '/')).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                document.getElementById('lastDate').value = data.lastDate;
+                document.getElementById('cycleLength').value = data.cycleLength;
+                document.getElementById('menstruationLength').value = data.menstruationLength;
+
+                const lastDate = new Date(data.lastDate);
+                generateCalendar(lastDate, data.cycleLength, data.menstruationLength);
+            } else {
+                console.log("Nenhum dado encontrado.");
+            }
+        }).catch((error) => {
+            console.error("Erro ao carregar dados:", error);
+        });
+    </script>
+</body>
+</html>
